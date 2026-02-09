@@ -1,164 +1,373 @@
 body {
   font-family: Arial, sans-serif;
   text-align: center;
-  background-color: #f4f4f4;
+  background: #f2f2f2;
+  margin: 20px;
+  transition: background-color 0.5s ease;
 }
 
-/* Board container */
+body.movement-phase {
+  background: #e8f4f8;
+}
+
+body.game-over {
+  background: #fff4e6;
+}
+
+h1 {
+  color: #222;
+}
+
+#login,
+#variant-selection {
+  margin: 20px auto;
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+}
+
+#variant-selection h2 {
+  margin-top: 0;
+  color: #2c3e50;
+}
+
+#variant-prompt {
+  font-size: 16px;
+  color: #555;
+  margin: 15px 0;
+}
+
+#variant-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.variant-btn {
+  padding: 15px 20px;
+  font-size: 16px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.variant-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.variant-btn:active {
+  transform: translateY(0);
+}
+
+.variant-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.variant-btn:disabled:hover {
+  transform: none;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.variant-btn[data-variant="12"] {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.variant-btn[data-variant="9"] {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.variant-btn[data-variant="6"] {
+  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+}
+
+.variant-btn[data-variant="p2-choose"] {
+  background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+}
+
+#waiting-message {
+  font-style: italic;
+  color: #7f8c8d;
+  text-align: center;
+  animation: pulse-text 1.5s infinite;
+}
+
+@keyframes pulse-text {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+#login input,
+#login select,
+#login button {
+  padding: 8px 12px;
+  margin: 5px;
+  font-size: 14px;
+}
+
+#login button {
+  background: #2980b9;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+#login button:hover {
+  background: #21618c;
+}
+
+#status {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 10px;
+  color: #222;
+  padding: 12px 20px;
+  border-radius: 8px;
+  background: white;
+  display: inline-block;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#status .phase-indicator {
+  display: block;
+  font-size: 14px;
+  color: #666;
+  font-weight: normal;
+  margin-top: 4px;
+}
+
+#status.placement-phase {
+  border-left: 4px solid #3498db;
+}
+
+#status.movement-phase {
+  border-left: 4px solid #9b59b6;
+}
+
+#status.capture-mode {
+  border-left: 4px solid #e74c3c;
+  background: #fff5f5;
+}
+
 #board {
   position: relative;
-  width: 320px;
-  height: 320px;
-  margin: 30px auto;
-  background-color: #fff;
-  border: 2px solid #333;
+  width: 400px;
+  height: 400px;
+  margin: 20px auto;
+  background: #fafafa;
+  border: 4px solid #222;
+  box-sizing: border-box;
 }
 
-/* Draw squares */
+/* Draw connecting lines between squares */
 #board::before,
 #board::after {
   content: "";
   position: absolute;
-  border: 2px solid #333;
+  background: #222;
 }
 
+/* Horizontal middle line */
 #board::before {
-  top: 40px;
-  left: 40px;
-  right: 40px;
-  bottom: 40px;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 3px;
+  transform: translateY(-50%);
 }
 
+/* Vertical middle line */
 #board::after {
-  top: 80px;
-  left: 80px;
-  right: 80px;
-  bottom: 80px;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  transform: translateX(-50%);
 }
 
-/* Board points */
+/* Middle square border */
+.square-middle {
+  position: absolute;
+  top: 15%;
+  left: 15%;
+  width: 70%;
+  height: 70%;
+  border: 3px solid #222;
+  box-sizing: border-box;
+  pointer-events: none;
+}
+
+/* Inner square border */
+.square-inner {
+  position: absolute;
+  top: 30%;
+  left: 30%;
+  width: 40%;
+  height: 40%;
+  border: 3px solid #222;
+  box-sizing: border-box;
+  pointer-events: none;
+}
+
 .point {
   position: absolute;
-  width: 14px;
-  height: 14px;
-  background-color: black;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
+  background: #888;
+  border: 3px solid #222;
   transform: translate(-50%, -50%);
   cursor: pointer;
-}
-/* Outer square */
-.point[data-id="0"] {
-  top: 0%;
-  left: 0%;
-}
-.point[data-id="1"] {
-  top: 0%;
-  left: 50%;
-}
-.point[data-id="2"] {
-  top: 0%;
-  left: 100%;
-}
-.point[data-id="3"] {
-  top: 50%;
-  left: 100%;
-}
-.point[data-id="4"] {
-  top: 100%;
-  left: 100%;
-}
-.point[data-id="5"] {
-  top: 100%;
-  left: 50%;
-}
-.point[data-id="6"] {
-  top: 100%;
-  left: 0%;
-}
-.point[data-id="7"] {
-  top: 50%;
-  left: 0%;
+  z-index: 10;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-/* Middle square */
-.point[data-id="8"] {
-  top: 12.5%;
-  left: 12.5%;
-}
-.point[data-id="9"] {
-  top: 12.5%;
-  left: 50%;
-}
-.point[data-id="10"] {
-  top: 12.5%;
-  left: 87.5%;
-}
-.point[data-id="11"] {
-  top: 50%;
-  left: 87.5%;
-}
-.point[data-id="12"] {
-  top: 87.5%;
-  left: 87.5%;
-}
-.point[data-id="13"] {
-  top: 87.5%;
-  left: 50%;
-}
-.point[data-id="14"] {
-  top: 87.5%;
-  left: 12.5%;
-}
-.point[data-id="15"] {
-  top: 50%;
-  left: 12.5%;
-}
-
-/* Inner square */
-.point[data-id="16"] {
-  top: 25%;
-  left: 25%;
-}
-.point[data-id="17"] {
-  top: 25%;
-  left: 50%;
-}
-.point[data-id="18"] {
-  top: 25%;
-  left: 75%;
-}
-.point[data-id="19"] {
-  top: 50%;
-  left: 75%;
-}
-.point[data-id="20"] {
-  top: 75%;
-  left: 75%;
-}
-.point[data-id="21"] {
-  top: 75%;
-  left: 50%;
-}
-.point[data-id="22"] {
-  top: 75%;
-  left: 25%;
-}
-.point[data-id="23"] {
-  top: 50%;
-  left: 25%;
-}
-
-/* Hover effect */
 .point:hover {
-  background-color: red;
+  transform: translate(-50%, -50%) scale(1.3);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
 }
 
-/* Player pieces */
 .point.p1 {
-  background-color: brown;
+  background: #e74c3c;
+  border-color: #c0392b;
+  box-shadow: 0 2px 8px rgba(231, 76, 60, 0.5);
 }
 
 .point.p2 {
-  background-color: white;
-  border: 2px solid black;
+  background: #3498db;
+  border-color: #2980b9;
+  box-shadow: 0 2px 8px rgba(52, 152, 219, 0.5);
+}
+
+/* Flying pieces have special glow */
+body.movement-phase .point.p1.selected {
+  animation: fly-glow-red 1.5s infinite;
+}
+
+body.movement-phase .point.p2.selected {
+  animation: fly-glow-blue 1.5s infinite;
+}
+
+@keyframes fly-glow-red {
+  0%,
+  100% {
+    box-shadow:
+      0 2px 8px rgba(231, 76, 60, 0.5),
+      0 0 20px rgba(243, 156, 18, 0.6);
+  }
+  50% {
+    box-shadow:
+      0 4px 16px rgba(231, 76, 60, 0.8),
+      0 0 30px rgba(243, 156, 18, 0.9);
+  }
+}
+
+@keyframes fly-glow-blue {
+  0%,
+  100% {
+    box-shadow:
+      0 2px 8px rgba(52, 152, 219, 0.5),
+      0 0 20px rgba(243, 156, 18, 0.6);
+  }
+  50% {
+    box-shadow:
+      0 4px 16px rgba(52, 152, 219, 0.8),
+      0 0 30px rgba(243, 156, 18, 0.9);
+  }
+}
+
+.point.selected {
+  outline: 4px solid #f39c12;
+  box-shadow: 0 0 15px rgba(243, 156, 18, 0.8);
+  transform: translate(-50%, -50%) scale(1.2);
+}
+
+.point.move-target {
+  background: #2ecc71;
+  border-color: #27ae60;
+  animation: pulse-green 1s infinite;
+  cursor: pointer;
+}
+
+@keyframes pulse-green {
+  0%,
+  100% {
+    box-shadow: 0 0 10px rgba(46, 204, 113, 0.5);
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(46, 204, 113, 0.8);
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+}
+
+.point.capture-target {
+  outline: 4px solid #e74c3c;
+  animation: pulse 0.8s infinite;
+  cursor: pointer;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    outline-color: #e74c3c;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    outline-color: #c0392b;
+    transform: translate(-50%, -50%) scale(1.15);
+  }
+}
+
+/* Chat */
+#chat {
+  width: 400px;
+  margin: 20px auto;
+  background: #fff;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+}
+
+#messages {
+  height: 150px;
+  overflow-y: auto;
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ccc;
+}
+
+#messages div {
+  margin: 5px 0;
+  padding: 5px;
+  background: #f8f9fa;
+  border-radius: 3px;
+}
+
+#chatInput {
+  width: calc(100% - 20px);
+  padding: 10px;
+  border: none;
+  font-size: 14px;
+}
+
+#chatInput:focus {
+  outline: none;
+  background: #f8f9fa;
 }

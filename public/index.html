@@ -1,56 +1,65 @@
 <!doctype html>
-<html lang="en">
+<html>
   <head>
     <meta charset="UTF-8" />
     <title>Morabaraba Online</title>
-
-    <!-- Basic mobile-friendly setup -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-    <!-- Styles -->
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <h1>Morabaraba Online</h1>
 
-    <!-- Connection status -->
-    <p id="status">Connecting...</p>
-
-    <!-- Game area (we'll fill this next) -->
-    <div id="board">
-      <!-- 24 board positions -->
-      <div class="point" data-id="0"></div>
-      <div class="point" data-id="1"></div>
-      <div class="point" data-id="2"></div>
-      <div class="point" data-id="3"></div>
-      <div class="point" data-id="4"></div>
-      <div class="point" data-id="5"></div>
-      <div class="point" data-id="6"></div>
-      <div class="point" data-id="7"></div>
-
-      <div class="point" data-id="8"></div>
-      <div class="point" data-id="9"></div>
-      <div class="point" data-id="10"></div>
-      <div class="point" data-id="11"></div>
-      <div class="point" data-id="12"></div>
-      <div class="point" data-id="13"></div>
-      <div class="point" data-id="14"></div>
-      <div class="point" data-id="15"></div>
-
-      <div class="point" data-id="16"></div>
-      <div class="point" data-id="17"></div>
-      <div class="point" data-id="18"></div>
-      <div class="point" data-id="19"></div>
-      <div class="point" data-id="20"></div>
-      <div class="point" data-id="21"></div>
-      <div class="point" data-id="22"></div>
-      <div class="point" data-id="23"></div>
+    <div id="login">
+      <input id="nickname" placeholder="Enter nickname" />
+      <select id="mode">
+        <option value="human">Human vs Human</option>
+        <option value="ai-easy">AI (Easy)</option>
+        <option value="ai-medium">AI (Medium)</option>
+        <option value="ai-hard">AI (Hard)</option>
+        <option value="spectator">Spectator</option>
+      </select>
+      <button id="join">Join</button>
     </div>
 
-    <!-- 1️⃣ Socket.IO client (MUST come first) -->
-    <script src="/socket.io/socket.io.js"></script>
+    <div id="variant-selection" style="display: none">
+      <h2>Select Game Variant</h2>
+      <p id="variant-prompt"></p>
+      <div id="variant-buttons">
+        <button class="variant-btn" data-variant="12">
+          Twelve Men's Morris (12 pieces)
+        </button>
+        <button class="variant-btn" data-variant="9">
+          Nine Men's Morris (9 pieces)
+        </button>
+        <button class="variant-btn" data-variant="6">
+          Six Men's Morris (6 pieces)
+        </button>
+        <button
+          class="variant-btn"
+          data-variant="p2-choose"
+          style="display: none"
+        >
+          Let P2 Choose
+        </button>
+      </div>
+      <p id="waiting-message" style="display: none">
+        Waiting for opponent's choice...
+      </p>
+    </div>
 
-    <!-- 2️⃣ Your own JavaScript -->
+    <p id="status"></p>
+
+    <div id="board">
+      <div class="square-middle"></div>
+      <div class="square-inner"></div>
+    </div>
+
+    <div id="chat">
+      <div id="messages"></div>
+      <input id="chatInput" placeholder="Type message..." />
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
     <script src="script.js"></script>
   </body>
 </html>
